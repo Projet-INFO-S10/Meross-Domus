@@ -47,23 +47,23 @@ if (!options.gateway) {
    
     if(options.on){
         //switch on the ligth
-        api.switchOn()
+        await api.switchOn()
     }
     if(options.off){
         //switch off the ligth
-        api.switchOff()
+        await api.switchOff()
     }
     if(options.list){
         //list
-        api.listAvailable()
+        await api.listAvailable()
     }
     if(options.power){
         //ask for power
-        api.currentElectricty()
+        await api.currentElectricty()
     }
     if(options.history){
         //ask for history
-        api.consumption()
+       await api.consumption()
     }
     
     console.log("Device information")
@@ -72,6 +72,6 @@ if (!options.gateway) {
 
     if (includeWifiList) {
         console.log("Include the device Wifi list")
-        //await api.deviceWifiList()
+        await api.deviceWifiList()
     }
 })()
