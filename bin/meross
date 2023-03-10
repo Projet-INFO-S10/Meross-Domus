@@ -9,7 +9,7 @@ program
   .version(version)
 
 program
-  .command('info [options]', 'get information about compatable Meross smart device')
-  .command('setup [options]', 'setup compatable Meross smart device')
+  .command('info [options]', 'get information about compatible Meross smart devices')
+  .command('setup [options]', 'setup compatible Meross smart devices')
 
 program.parse(process.argv)

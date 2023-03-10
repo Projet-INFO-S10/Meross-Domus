@@ -22,6 +22,11 @@ program
   .option('-u, --user <user-id>', 'Integer id. Only useful for connecting to Meross Cloud.', parseInt)
   .option('-k, --key <shared-key>', 'Shared key for generating signatures', '')
   .option('--include-wifi', 'Ask device for Nearby WIFI AP list')
+  .option('--on', "Switch on the switch")
+  .option('--off', "Switch off the switch")
+  .option('--list', "Ask for the list of available data on the topic")
+  .option('--history', "Ask for the history of the power consumption")
+  .option('--power', "Ask for the current power of the switch")
   .option('-v, --verbose', 'Show debugging messages', '')
   .parse(process.argv)
 
@@ -39,9 +44,34 @@ if (!options.gateway) {
     const api = new API(gateway, key, null, verbose)
 
     console.log(`Getting info about device with IP ${gateway}`)
+   
+    if(options.on){
+        //switch on the ligth
+        api.switchOn()
+    }
+    if(options.off){
+        //switch off the ligth
+        api.switchOff()
+    }
+    if(options.list){
+        //list
+        api.listAvailable()
+    }
+    if(options.power){
+        //ask for power
+        api.currentElectricty()
+    }
+    if(options.history){
+        //ask for history
+        api.consumption()
+    }
+    
+    console.log("Device information")
     await api.deviceInformation()
+    
 
     if (includeWifiList) {
-        await api.deviceWifiList()
+        console.log("Include the device Wifi list")
+        //await api.deviceWifiList()
     }
 })()
