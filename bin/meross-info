@@ -5,8 +5,14 @@
 const {version} = require('../package.json')
 const program = require('commander')
 const util = require('util')
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
 
 const API = require('../lib/api')
+const { Readline } = require('readline/promises');
+const { read } = require('fs');
 
 const collection = (value, store = []) => {
     store.push(value)
@@ -36,42 +42,66 @@ if (!options.gateway) {
     process.exit(1)
 }
 
+function question(prompt) {
+    return new Promise(resolve => {
+        readline.question(prompt, resolve);
+    });
+}
+
 (async () => {
-    const gateway = options.gateway
+    var exit = false
+
+    const gateway = await question("Please enter the IP address of the Meross Outlet: ")
     const key = options.key
     const includeWifiList = options.includeWifi
     const verbose = options.verbose
     const api = new API(gateway, key, null, verbose)
-
-    console.log(`Getting info about device with IP ${gateway}`)
-   
-    if(options.on){
-        //switch on the ligth
-        api.switchOn()
-    }
-    if(options.off){
-        //switch off the ligth
-        api.switchOff()
-    }
-    if(options.list){
-        //list
-        api.listAvailable()
-    }
-    if(options.power){
-        //ask for power
-        api.currentElectricty()
-    }
-    if(options.history){
-        //ask for history
-        api.consumption()
-    }
-    
-    console.log("Device information")
+    console.log(`\nGetting info about device with IP ${gateway}`)
     await api.deviceInformation()
-    
 
-    if (includeWifiList) {
-        console.log("Include the device Wifi list")
-        //await api.deviceWifiList()
+    while(!exit){
+        console.log("\nList of the available commands:\n")
+        console.log("on: switch on the poweroutlet")
+        console.log("off: switch off the poweroutlet")
+        console.log("list: ask for the list of available data on the topic")
+        console.log("history: ask for the history of the power consumption")
+        console.log("power: ask for the current power of the device")
+        console.log("info: ask for the info of the device")
+        console.log("exit: exit the program\n")
+        
+        const command = await question('Enter a command: ');
+       
+        if(command === "on"){
+            //switch on the ligth
+            await api.switchOn()
+        }
+        if(command === "off"){
+            //switch off the ligth
+            await api.switchOff()
+        }
+        if(command === "list"){
+            //list
+            await api.listAvailable()
+        }
+        if(command === "power"){
+            //ask for power
+            await api.currentElectricty()
+        }
+        if(command === "history"){
+            //ask for history
+            await api.consumption()
+        }
+        if(command === "info"){
+            //ask for history
+            await api.deviceInformation()
+        }        
+        if (includeWifiList) {
+            console.log("Include the device Wifi list")
+            // await api.deviceWifiList()
+        }
+        if(command === "exit"){
+            exit = true
+        }
     }
+    readline.close();
 })()
